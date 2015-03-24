@@ -1,0 +1,7 @@
+{
+  "name": "phantom-assets",
+  "version": "0.0.1",
+  "dependencies": {
+    "phantomcss": "^0.10.0"
+  }
+}
