@@ -1,12 +1,10 @@
-testConfig = {
-    testName: "My page visual tests",
-    viewport: [1024, 768],
-    selectors: [
-        'body'
-    ]
+function _filename(selector) {
+    selector = selector.replace('.', 'class-');
+    selector = selector.replace('#', 'id-');
+    return selector;
 }
 
-function pageTest(config) {
+function runTest(config) {
     // Setup PhantomCSS
     var phantomCss = require( 'phantomcss' );
     phantomCss.init({
@@ -17,18 +15,17 @@ function pageTest(config) {
     // Prepare test script
     function testScript(test) {
         // The web page to parse
-        casper.start('index.html')
+        casper.start(config.url);
 
         // Set the viewport
         casper.viewport(config.viewport[0], config.viewport[1]);
 
-        // Test some screenshots
+        // Test screenshots of each selector
         casper.then(function() {
-            // Test screenshots of each selector
             config.selectors.forEach(function(selector) {
-                phantomCss.screenshot(selector, selector)
-            })
-        })
+                phantomCss.screenshot(selector, _filename(selector));
+            });
+        });
 
         // Finish
         casper.then(function now_check_the_screenshots() {
@@ -38,8 +35,8 @@ function pageTest(config) {
 
         casper.run(function() {
             // And process everything
-            casper.test.done()
-        })
+            casper.test.done();
+        });
     }
 
     // Fire off the casper test
@@ -47,7 +44,7 @@ function pageTest(config) {
         config.testName,
         config.selectors.length,
         testScript
-    )
+    );
 }
 
-pageTest(testConfig);
+exports.runTest = runTest;
